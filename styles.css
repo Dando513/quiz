@@ -1,85 +1,71 @@
-*, *::before, *::after {
-  box-sizing: border-box;
-  font-family: Gotham Rounded;
-}
-
-:root {
-  --hue-neutral: 200;
-  --hue-wrong: 0;
-  --hue-correct: 145;
-}
-
 body {
-  --hue: var(--hue-neutral);
-  padding: 0;
-  margin: 0;
-  display: flex;
-  width: 100vw;
-  height: 100vh;
-  justify-content: center;
-  align-items: center;
-  background-color: hsl(var(--hue), 100%, 20%);
+  font-family: 'Open Sans', sans-serif;
+  font-size: 16px;
+  line-height: 1;
 }
 
-body.correct {
-  --hue: var(--hue-correct);
-}
-
-body.wrong {
-  --hue: var(--hue-wrong);
-}
-
-.container {
-  width: 800px;
-  max-width: 80%;
-  background-color: white;
-  border-radius: 5px;
+textarea{
+  background: transparent;
+  border: none;
+  resize: none;
+  color: #000000;
+  border-left: 1px solid black;
   padding: 10px;
-  box-shadow: 0 0 10px 2px;
 }
 
-.btn-grid {
-  display: grid;
-  grid-template-columns: repeat(2, auto);
-  gap: 10px;
-  margin: 20px 0;
-}
-
-.btn {
-  --hue: var(--hue-neutral);
-  border: 1px solid hsl(var(--hue), 100%, 30%);
-  background-color: hsl(var(--hue), 100%, 50%);
-  border-radius: 5px;
-  padding: 5px 10px;
-  color: white;
-  outline: none;
-}
-
-.btn:hover {
-  border-color: black;
-}
-
-.btn.correct {
-  --hue: var(--hue-correct);
+.jumbotron {
+  text-align: center;
+  background-color: transparent;
   color: black;
+  border-radius: 0;
+  border-bottom: 10px solid black;
 }
 
-.btn.wrong {
-  --hue: var(--hue-wrong);
+.description{
+  white-space: pre-wrap;
 }
 
-.start-btn, .next-btn {
-  font-size: 1.5rem;
-  font-weight: bold;
-  padding: 10px 20px;
+.time-block{
+  text-align: center;
+  border-radius: 15px;
 }
 
-.controls {
-  display: flex;
-  justify-content: center;
-  align-items: center;
+.row {
+  white-space: pre-wrap;
+  height: 80px;
+  border-top: 1px solid white;;
 }
 
-.hide {
-  display: none;
+.hour {
+  background-color: #ffffff;
+  color: #000000;
+  border-top: 1px dashed #000000;
+}
+
+.past {
+  background-color: #d3d3d3;
+  color: white;
+}
+
+.present {
+  background-color: #ff6961;
+  color: white;
+}
+
+.future {
+  background-color: #77dd77;
+  color: white;
+}
+
+.saveBtn {
+  border-left: 1px solid black;
+  border-top-right-radius: 15px;
+  border-bottom-right-radius: 15px;
+  background-color: #06AED5;
+  color: white;
+}
+
+.saveBtn i:hover {
+  font-size: 20px;
+  transition: all .3s ease-in-out;
 }

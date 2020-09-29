@@ -1,104 +1,159 @@
-const startButton = document.getElementById('start-btn')
-const nextButton = document.getElementById('next-btn')
-const questionContainerElement = document.getElementById('question-container')
-const questionElement = document.getElementById('question')
-const answerButtonsElement = document.getElementById('answer-buttons')
+///checking 
 
-let shuffledQuestions, currentQuestionIndex
+console.log("loaded")
 
-startButton.addEventListener('click', startGame)
-nextButton.addEventListener('click', () => {
-    currentQuestionIndex++
-    setNextQuestion()
-})
 
-function startGame() {
-    startButton.classList.add('hide')
-    shuffledQuestions = questions.sort(() => Math.random() - .5)
-    currentQuestionIndex = 0
-    questionContainerElement.classList.remove('hide')
-    setNextQuestion()
+// select all elements
+const start = document.getElementById("start");
+const quiz = document.getElementById("quiz");
+const question = document.getElementById("question");
+const qImg = document.getElementById("qImg");
+const choiceA = document.getElementById("A");
+const choiceB = document.getElementById("B");
+const choiceC = document.getElementById("C");
+const counter = document.getElementById("counter");
+const timeGauge = document.getElementById("timeGauge");
+const progress = document.getElementById("progress");
+const scoreDiv = document.getElementById("scoreContainer");
+
+// create our questions
+let questions = [
+    {
+        question : "What does HTML stand for?",
+    
+        choiceA : "happy toad marries leopard",
+        choiceB : "Hypertext Markup Language",
+        choiceC : "hyper turkey means laughs",
+        correct : "B"
+    },{
+        question : "What does CSS stand for?",
+       
+        choiceA : "Cascading Style Sheets",
+        choiceB : "Charlie smith sanderson",
+        choiceC : "candy store special",
+        correct : "A"
+    },{
+        question : "What does JS stand for?",
+     
+        choiceA : "john smith",
+        choiceB : "joan smith",
+        choiceC : "Java Script",
+        correct : "C"
+    }
+];
+
+// create some variables
+
+const lastQuestion = questions.length - 1;
+let runningQuestion = 0;
+let count = 15;
+const questionTime = 10; // 10s
+const gaugeWidth = 150; // 150px
+const gaugeUnit = gaugeWidth / questionTime;
+let TIMER;
+let score = 0;
+
+// render a question
+function renderQuestion(){
+    let q = questions[runningQuestion];
+
+    question.innerHTML = "<p>"+ q.question +"</p>";
+    //qImg.innerHTML = "<img src="+ q.imgSrc +">";
+    choiceA.innerHTML = q.choiceA;
+    choiceB.innerHTML = q.choiceB;
+    choiceC.innerHTML = q.choiceC;
 }
 
-function setNextQuestion() {
-    resetState()
-    showQuestion(shuffledQuestions[currentQuestionIndex])
+start.addEventListener("click",startQuiz);
+
+// start quiz
+function startQuiz(){
+    start.style.display = "none";
+    renderQuestion();
+    quiz.style.display = "block";
+    renderProgress();
+    renderCounter();
+    TIMER = setInterval(renderCounter,1000); // 1000ms = 1s
 }
 
-function showQuestion(question) {
-    questionElement.innerText = question.question
-    question.answers.forEach(answer => {
-        const button = document.createElement('button')
-        button.innerText = answer.text
-        button.classList.add('btn')
-        if (answer.correct) {
-            button.dataset.correct = answer.correct
+// render progress
+function renderProgress(){
+    for(let qIndex = 0; qIndex <= lastQuestion; qIndex++){
+        progress.innerHTML += "<div class='prog' id="+ qIndex +"></div>";
+    }
+}
+
+// counter render
+
+function renderCounter(){
+    counter.innerHTML = count;
+    timeGauge.style.width = count * gaugeUnit + "px";
+    
+    if(count >0){
+        count--
+    }else{
+        count = 15;
+        // change progress color to red
+        answerIsWrong();
+        if(runningQuestion < lastQuestion){
+            runningQuestion++;
+            renderQuestion();
+        }else{
+            // end the quiz and show the score
+            clearInterval(TIMER);
+            scoreRender();
         }
-        button.addEventListener('click', selectAnswer)
-        answerButtonsElement.appendChild(button)
-    })
-}
-
-function resetState() {
-    clearStatusClass(document.body)
-    nextButton.classList.add('hide')
-    while (answerButtonsElement.firstChild) {
-        answerButtonsElement.removeChild(answerButtonsElement.firstChild)
     }
 }
 
-function selectAnswer(e) {
-    const selectedButton = e.target
-    const correct = selectedButton.dataset.correct
-    setStatusClass(document.body, correct)
-    Array.from(answerButtonsElement.children).forEach(button => {
-        setStatusClass(button, button.dataset.correct)
-    })
-    if (shuffledQuestions.length > currentQuestionIndex + 1) {
-        nextButton.classList.remove('hide')
-    } else {
-        startButton.innerText = 'Restart'
-        startButton.classList.remove('hide')
+// checkAnwer
+
+function checkAnswer(answer){
+    if( answer == questions[runningQuestion].correct){
+        // answer is correct
+        score+=count;
+        // change progress color to green
+        answerIsCorrect();
+        count = 15;
+        if(runningQuestion < lastQuestion){
+        runningQuestion++;
+        renderQuestion();
+
     }
+    else{
+        // end the quiz and show the score
+        clearInterval(TIMER);
+        scoreRender();
+    }
+    }
+    else{
+        // answer is wrong
+        // change progress color to red
+        answerIsWrong();
+        count -= 5;
+    }
+    
 }
 
-function setStatusClass(element, correct) {
-    clearStatusClass(element)
-    if (correct) {
-        element.classList.add('correct')
-    } else {
-        element.classList.add('wrong')
-    }
+// answer is correct
+function answerIsCorrect(){
+    document.getElementById(runningQuestion).style.backgroundColor = "#0f0";
 }
 
-function clearStatusClass(element) {
-    element.classList.remove('correct')
-    element.classList.remove('wrong')
+// answer is Wrong
+function answerIsWrong(){
+    document.getElementById(runningQuestion).style.backgroundColor = "#f00";
 }
 
-const questions = [
-    {
-        question: "What does HTML stand for?",
-        answers: [
-            { text: "happy toad marries leopard", correct: false },
-            { text: "Hypertext Markup Language", correct: true },
-            { text: "hyper turkey means laughs", correct: false }
-        ]
-    },
-    {
-        question: "What does CSS stand for?",
-        answers: [
-            { text: "Cascading Style Sheets", correct: true },
-            { text: "Hypertext Markup Language", correct: false },
-            { text: "hyper turkey means laughs", correct: false }
-        ]
+// score render
+function scoreRender(){
+    scoreDiv.style.display = "block";
 
-    }, {
-        question: "What does JS stand for?",
-        answers: [
-            { text: "john smith", correct: false },
-            { text: "joan smith", correct: false },
-            { text: "Java Script", correct: true }
-        ]
-    }
-]
+    // calculate the amount of question percent answered by the user
+    //const scorePerCent = Math.round(100 * score/questions.length);
+
+
+
+    // scoreDiv.innerHTML = "<img src="+ img +">";
+    scoreDiv.innerHTML += "<p>"+ score +"</p>";
+}
