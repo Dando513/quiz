@@ -155,5 +155,5 @@ function scoreRender(){
 
 
     // scoreDiv.innerHTML = "<img src="+ img +">";
-    scoreDiv.innerHTML += "<p>"+ score +"</p>";
+    scoreDiv.innerHTML += "<p> Your time weighted score is:"+ score +"</p>";
 }
